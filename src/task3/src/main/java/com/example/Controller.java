@@ -30,7 +30,6 @@ public class Controller {
     @FXML
     private TextArea reportArea;
 
-
     private final List<String> forbiddenWords = Collections.synchronizedList(new ArrayList<>());
     private final List<String> reportLines = Collections.synchronizedList(new ArrayList<>());
     private File inputFolder;
@@ -195,6 +194,33 @@ public class Controller {
     @FXML
     private void handleStop() {
         stopped = true;
+
         reportArea.appendText("Search stopped.\n");
     }
+
+    @FXML
+    private void handleChooseFile() {
+        javafx.stage.FileChooser chooser = new javafx.stage.FileChooser();
+        chooser.setTitle("Select Forbidden Words File");
+        chooser.getExtensionFilters().add(
+                new javafx.stage.FileChooser.ExtensionFilter("Text Files", "*.txt")
+        );
+
+        File file = chooser.showOpenDialog(new Stage());
+        if (file != null) {
+            try {
+                List<String> lines = Files.readAllLines(file.toPath());
+                for (String line : lines) {
+                    if (!line.trim().isEmpty()) {
+                        forbiddenWords.add(line.trim());
+                        wordList.getItems().add(line.trim());
+                    }
+                }
+                reportArea.appendText("Loaded forbidden words from file: " + file.getName() + "\n");
+            } catch (IOException e) {
+                reportArea.appendText("Error reading file: " + e.getMessage() + "\n");
+            }
+        }
+    }
+
 }

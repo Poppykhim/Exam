@@ -19,6 +19,7 @@
     <HBox spacing="10">
         <TextField fx:id="wordInput" promptText="Enter forbidden word" style="-fx-pref-width: 300; -fx-background-color: white; -fx-border-color: black; -fx-text-fill: black;" />
         <Button onAction="#handleAddWord" style="-fx-background-color: black; -fx-text-fill: white;" text="Add Word" />
+      <Button fx:id="FileInput" onAction="#handleChooseFile" style="-fx-background-color: black; -fx-text-fill: white;" text="Choose file" />
     </HBox>
 
     <!-- Word list -->
