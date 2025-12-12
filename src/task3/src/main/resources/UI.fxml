@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="TOP_CENTER" prefHeight="692.0" prefWidth="600" spacing="15" style="-fx-background-color: white; -fx-padding: 25;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.Controller">
+
+    <!-- Title -->
+    <Label style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: black;" text="Forbidden Words Scanner" />
+
+    <!-- Word input section -->
+    <HBox spacing="10">
+        <TextField fx:id="wordInput" promptText="Enter forbidden word" style="-fx-pref-width: 300; -fx-background-color: white; -fx-border-color: black; -fx-text-fill: black;" />
+        <Button onAction="#handleAddWord" style="-fx-background-color: black; -fx-text-fill: white;" text="Add Word" />
+    </HBox>
+
+    <!-- Word list -->
+    <ListView fx:id="wordList" prefHeight="100" style="-fx-border-color: black; -fx-background-color: white; -fx-text-fill: black;" />
+
+    <!-- Folder selection buttons -->
+    <HBox spacing="10">
+        <Button onAction="#handleChooseInput" prefHeight="26.0" prefWidth="273.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Choose Input Folder" />
+        <Button onAction="#handleChooseOutput" prefHeight="26.0" prefWidth="267.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Choose Output Folder" />
+    </HBox>
+     <Button onAction="#handleStartSearch" prefHeight="42.0" prefWidth="101.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Start Search" />
+
+    <!-- Search and control buttons -->
+    <HBox spacing="10">
+        <Button onAction="#handlePause" prefHeight="26.0" prefWidth="98.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Pause">
+         <HBox.margin>
+            <Insets left="110.0" />
+         </HBox.margin></Button>
+        <Button onAction="#handleResume" prefHeight="26.0" prefWidth="111.0" style="-fx-background-color: black; -fx-text-fill: white;" text="Resume">
+         <HBox.margin>
+            <Insets />
+         </HBox.margin></Button>
+        <Button onAction="#handleStop" prefHeight="26.0" prefWidth="116.0" style="-fx-background-color: Red; -fx-text-fill: white;" text="Stop" textFill="WHITE" />
+    </HBox>
+
+    <!-- Progress bar -->
+    <ProgressBar fx:id="progressBar" prefHeight="22.0" prefWidth="500" progress="0.0" style="-fx-accent: gray;" />
+   <Label prefHeight="18.0" prefWidth="550.0" text="Result" />
+
+    <!-- Report area -->
+    <TextArea fx:id="reportArea" prefHeight="200" style="-fx-border-color: black; -fx-background-color: white; -fx-text-fill: black;" wrapText="true" />
+
+</VBox>
