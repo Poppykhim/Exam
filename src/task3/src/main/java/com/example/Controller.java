@@ -7,8 +7,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javafx.application.Platform;
@@ -36,9 +35,11 @@ public class Controller {
     private final List<String> reportLines = Collections.synchronizedList(new ArrayList<>());
     private File inputFolder;
     private File outputFolder;
-    private ExecutorService executor;
     private volatile boolean paused = false;
     private volatile boolean stopped = false;
+
+    // Semaphore with 1 permit → only one file processed at a time
+    private final Semaphore semaphore = new Semaphore(1);
 
     @FXML
     public void initialize() {
@@ -77,7 +78,6 @@ public class Controller {
         if (inputFolder != null && outputFolder != null && !forbiddenWords.isEmpty()) {
             reportArea.appendText("Search started...\n");
 
-            executor = Executors.newFixedThreadPool(4);
             stopped = false;
             paused = false;
 
@@ -89,10 +89,11 @@ public class Controller {
                 int totalFiles = files.size();
                 AtomicInteger processed = new AtomicInteger(0);
 
-                for (Path file : files) {
-                    executor.submit(() -> {
+                // Single worker thread
+                new Thread(() -> {
+                    for (Path file : files) {
                         if (stopped) {
-                            return;
+                            break;
                         }
 
                         // Pause loop
@@ -103,17 +104,25 @@ public class Controller {
                             }
                         }
 
-                        processFile(file, outputFolder.toPath());
+                        try {
+                            semaphore.acquire(); // acquire permit before processing
+                            processFile(file, outputFolder.toPath());
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        } finally {
+                            semaphore.release(); // release permit after processing
+                        }
+
                         int done = processed.incrementAndGet();
                         double progress = (double) done / totalFiles;
-
                         Platform.runLater(() -> progressBar.setProgress(progress));
 
                         if (done == totalFiles && !stopped) {
                             Platform.runLater(() -> writeReport(outputFolder.toPath()));
                         }
-                    });
-                }
+                    }
+                }).start();
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -187,9 +196,6 @@ public class Controller {
     @FXML
     private void handleStop() {
         stopped = true;
-        if (executor != null) {
-            executor.shutdownNow();
-        }
         reportArea.appendText("Search stopped.\n");
     }
 }
