@@ -30,7 +30,7 @@ public class Controller {
     @FXML
     private TextArea reportArea;
 
-    // Backend state
+
     private final List<String> forbiddenWords = Collections.synchronizedList(new ArrayList<>());
     private final List<String> reportLines = Collections.synchronizedList(new ArrayList<>());
     private File inputFolder;
@@ -38,7 +38,6 @@ public class Controller {
     private volatile boolean paused = false;
     private volatile boolean stopped = false;
 
-    // Semaphore with 1 permit → only one file processed at a time
     private final Semaphore semaphore = new Semaphore(1);
 
     @FXML
